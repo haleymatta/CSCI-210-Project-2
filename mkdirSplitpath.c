@@ -17,7 +17,7 @@ struct NODE* findChildDir(struct NODE* parent, const char* name) {
 }
 
 //splits the pathName into dirName and baseName; also ret a ptr to 
-//directory node where new node is going to nbe created ( parent dir)
+//directory node where new node is going to be created (parent dir)
 //on err (if dir in path doesn't exist) it prints an err and ret NULL
 struct NODE* splitPath(char* pathName, char* baseName, char* dirName) {
     //copy original pathName 
@@ -72,12 +72,19 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName) {
 
     //tokenize dir path using "/" as delimiter
     char* token = strtok(tempDir, "/");
+    char currentPath[128] = ""; // to keep track of traversal path for error output
+
     while(token != NULL) {
+        if(strlen(currentPath) > 0) {
+            strcat(currentPath, "/");
+        }
+        strcat(currentPath, token);
+
         //look for dir with this name in curr dir
         struct NODE* nextDir = findChildDir(current, token);
         if(nextDir == NULL) {
             //if dir doesn't exist -> print err -> ret NULL.
-            printf("ERROR: directory %s does not exist\n", token);
+            printf("ERROR: directory %s does not exist\n", currentPath);
             return NULL;
         }
         current = nextDir;
@@ -88,7 +95,7 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName) {
 
 //creates new dir node based on given pathName.
 void mkdir(char pathName[]) {
-    //if pathName == "/" (no new dir specified) -> print err
+    //if pathName is "/" (no new dir specified) -> print err
     if(strcmp(pathName, "/") == 0) {
         printf("MKDIR ERROR: no path provided\n");
         return;
@@ -98,7 +105,7 @@ void mkdir(char pathName[]) {
     char dirName[128];  //allocate enough space to store dir portion.
     struct NODE* parentDir = splitPath(pathName, baseName, dirName);
     if(parentDir == NULL) {
-        //err during path traversal
+        //err during path traversal.
         return;
     }
 
@@ -106,7 +113,8 @@ void mkdir(char pathName[]) {
     struct NODE* temp = parentDir->childPtr;
     while(temp != NULL) {
         if(strcmp(temp->name, baseName) == 0) {
-            printf("MKDIR ERROR: directory %s already exists\n", baseName);
+            //use full pathName in err msg
+            printf("MKDIR ERROR: directory %s already exists\n", pathName);
             return;
         }
         temp = temp->siblingPtr;
