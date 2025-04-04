@@ -86,27 +86,27 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName) {
     return current;
 }
 
-//creates a new dir node based on given pathName
+//creates new dir node based on given pathName.
 void mkdir(char pathName[]) {
-    //if pathName is "/" (no new dir specified) -> print err
+    //if pathName == "/" (no new dir specified) -> print err
     if(strcmp(pathName, "/") == 0) {
         printf("MKDIR ERROR: no path provided\n");
         return;
     }
 
     char baseName[64];
-    char dirName[128];  //allocate enough space to store dir portion
+    char dirName[128];  //allocate enough space to store dir portion.
     struct NODE* parentDir = splitPath(pathName, baseName, dirName);
     if(parentDir == NULL) {
         //err during path traversal
         return;
     }
 
-    //check if node w same name already exists in parent dir
+    //check if a node with same name already exists in parent dir
     struct NODE* temp = parentDir->childPtr;
     while(temp != NULL) {
         if(strcmp(temp->name, baseName) == 0) {
-            printf("MKDIR ERROR: directory %s already exists\n");
+            printf("MKDIR ERROR: directory %s already exists\n", baseName);
             return;
         }
         temp = temp->siblingPtr;
@@ -131,6 +131,6 @@ void mkdir(char pathName[]) {
     }
 
     //success msg
-    printf("MKDIR SUCCESS: node %s successfully created\n");
+    printf("MKDIR SUCCESS: node %s successfully created\n", pathName);
     return;
 }
