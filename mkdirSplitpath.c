@@ -10,7 +10,7 @@ void mkdir(char pathName[]){
     //
     // YOUR CODE TO REPLACE THE PRINTF FUNCTION BELOW
 
-    printf(" Hello Big Beautiful World ");
+    printf(" Hello Wild World ");
 
     return;
 }
